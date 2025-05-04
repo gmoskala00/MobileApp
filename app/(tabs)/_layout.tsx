@@ -1,5 +1,4 @@
-import { Tabs } from "expo-router";
-import { Button } from "react-native";
+import { router, Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { GlobalStyles } from "@/constants/style";
 import IconButton from "@/components/ExpensesOutput/UI/IconButton";
@@ -26,7 +25,12 @@ const TabsLayout = () => {
             icon="add"
             size={24}
             color={tintColor ?? "white"}
-            onPress={() => {}}
+            onPress={() => {
+              router.push({
+                pathname: "/manage-expense",
+                params: { expenseId: null },
+              });
+            }}
           />
         ),
       }}

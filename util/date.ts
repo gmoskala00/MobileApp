@@ -3,3 +3,7 @@ export const getFormattedDate = (date: Date) => {
   const formattedDay = date.getDate().toString().padStart(2, "0");
   return `${date.getFullYear()}-${formattedMonth}-${formattedDay}`;
 };
+
+export function getDateMinusDay(date: Date, days: number) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate() - days);
+}

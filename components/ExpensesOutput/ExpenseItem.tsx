@@ -5,18 +5,22 @@ import { getFormattedDate } from "@/util/date";
 import { router } from "expo-router";
 
 type ExpenseItemProps = {
+  id: string;
   description: string;
   date: Date;
   amount: number;
 };
 
-const ExpenseItem = ({ description, date, amount }: ExpenseItemProps) => {
+const ExpenseItem = ({ id, description, date, amount }: ExpenseItemProps) => {
   const expensePressHandler = () => {
-    router.push("/manage-expense");
+    router.push({ pathname: "/manage-expense", params: { expenseId: id } });
   };
 
   return (
-    <Pressable android_ripple={{ color: "gray" }} onPress={expensePressHandler}>
+    <Pressable
+      onPress={expensePressHandler}
+      style={({ pressed }) => pressed && styles.pressed}
+    >
       <View style={styles.expenseItem}>
         <View>
           <Text style={[styles.textBase, styles.description]}>
@@ -35,6 +39,9 @@ const ExpenseItem = ({ description, date, amount }: ExpenseItemProps) => {
 export default ExpenseItem;
 
 const styles = StyleSheet.create({
+  pressed: {
+    opacity: 0.75,
+  },
   expenseItem: {
     padding: 12,
     marginVertical: 8,
