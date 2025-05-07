@@ -1,14 +1,20 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import IconButton from "@/components/ExpensesOutput/UI/IconButton";
 import { GlobalStyles } from "@/constants/style";
 
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { ExpensesContext } from "@/store/expenses-context";
 import ExpenseForm from "@/components/ExpensesOutput/ManageExpense/ExpenseForm";
 import { ExpenseInput } from "@/models/expense";
+import { deleteExpense, storeExpense, updateExpense } from "@/util/http";
+import LoadingOverlay from "@/components/ExpensesOutput/UI/LoadingOverlay";
+import ErrorOverlay from "@/components/ExpensesOutput/UI/ErrorOverlay";
 
 const ManageExpenseScreen = () => {
+  const [isSubmitting, setIsSumbitting] = useState(false);
+  const [error, setError] = useState("");
+
   const { expenseId } = useLocalSearchParams();
   const expensesContext = useContext(ExpensesContext);
 
@@ -18,27 +24,50 @@ const ManageExpenseScreen = () => {
     (expense) => expenseId == expense.id
   );
 
-  const deleteExpenseHandler = () => {
+  const deleteExpenseHandler = async () => {
     if (typeof expenseId == "string") {
-      expensesContext.deleteExpense(expenseId);
+      setIsSumbitting(true);
+      try {
+        await deleteExpense(expenseId);
+        expensesContext.deleteExpense(expenseId);
+        router.back();
+      } catch (error) {
+        setError("Could not Delete Expense, try again later");
+        setIsSumbitting(false);
+      }
     }
-    router.back();
   };
 
   const cancelHandler = () => {
     router.back();
   };
 
-  const confirmHandler = (expenseData: ExpenseInput) => {
-    if (isEditing) {
-      if (typeof expenseId == "string") {
-        expensesContext.updateExpense(expenseId, expenseData);
+  const confirmHandler = async (expenseData: ExpenseInput) => {
+    setIsSumbitting(true);
+    try {
+      if (isEditing) {
+        if (typeof expenseId == "string") {
+          expensesContext.updateExpense(expenseId, expenseData);
+          await updateExpense(expenseId, expenseData);
+        }
+      } else {
+        const id = await storeExpense(expenseData);
+        expensesContext.addExpense({ ...expenseData, id: id });
       }
-    } else {
-      expensesContext.addExpense(expenseData);
+      router.back();
+    } catch (error) {
+      setError("Could not save data - please try again later");
+      setIsSumbitting(false);
     }
-    router.back();
   };
+
+  if (error && !isSubmitting) {
+    return <ErrorOverlay message={error} />;
+  }
+
+  if (isSubmitting) {
+    return <LoadingOverlay />;
+  }
 
   return (
     <>

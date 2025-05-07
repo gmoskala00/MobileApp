@@ -36,7 +36,7 @@ const TabsLayout = () => {
       }}
     >
       <Tabs.Screen
-        name="recent-expense"
+        name="recent-expenses"
         options={{
           title: "Recent Expenses",
           tabBarLabel: "Recent",
@@ -46,7 +46,7 @@ const TabsLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="index"
+        name="all-expenses"
         options={{
           title: "All Expenses",
           tabBarLabel: "All Expenses",
