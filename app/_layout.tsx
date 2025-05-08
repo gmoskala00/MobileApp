@@ -1,29 +1,42 @@
-import { GlobalStyles } from "@/constants/style";
 import { Stack } from "expo-router";
-import ExpensesContextProvider from "@/store/expenses-context";
 import { StatusBar } from "expo-status-bar";
+import { AuthContextProvider, useAuth } from "@/store/auth-context";
+import { GlobalStyles } from "@/constants/style";
+
+function RootLayoutInner() {
+  const { isAuthenticated } = useAuth();
+
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontSize: 22,
+          fontWeight: "bold",
+        },
+        headerStyle: {
+          backgroundColor: GlobalStyles.colors.primary500,
+        },
+        headerTintColor: "white",
+      }}
+    >
+      {isAuthenticated ? (
+        <Stack.Screen name="(authenticated)" options={{ headerShown: false }} />
+      ) : (
+        <Stack.Screen name="auth" options={{ headerShown: false }} />
+      )}
+    </Stack>
+  );
+}
 
 export default function RootLayout() {
   return (
     <>
       <StatusBar style="light" />
-      <ExpensesContextProvider>
-        <Stack
-          screenOptions={{
-            headerTitleAlign: "center",
-            headerTitleStyle: {
-              fontSize: 22,
-              fontWeight: "bold",
-            },
-            headerStyle: {
-              backgroundColor: GlobalStyles.colors.primary500,
-            },
-            headerTintColor: "white",
-          }}
-        >
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        </Stack>
-      </ExpensesContextProvider>
+      <AuthContextProvider>
+        <RootLayoutInner />
+      </AuthContextProvider>
     </>
   );
 }
