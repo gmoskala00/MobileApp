@@ -1,11 +1,9 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { AuthContextProvider, useAuth } from "@/store/auth-context";
+import { AuthContextProvider } from "@/store/auth-context";
 import { GlobalStyles } from "@/constants/style";
 
 function RootLayoutInner() {
-  const { isAuthenticated } = useAuth();
-
   return (
     <Stack
       screenOptions={{
@@ -21,11 +19,8 @@ function RootLayoutInner() {
         headerTintColor: "white",
       }}
     >
-      {isAuthenticated ? (
-        <Stack.Screen name="(authenticated)" options={{ headerShown: false }} />
-      ) : (
-        <Stack.Screen name="auth" options={{ headerShown: false }} />
-      )}
+      <Stack.Screen name="(authenticated)" options={{ headerShown: false }} />
+      <Stack.Screen name="auth" options={{ headerShown: false }} />
     </Stack>
   );
 }

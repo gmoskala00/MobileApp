@@ -4,8 +4,8 @@ import { ExpensesContext } from "@/store/expenses-context";
 import ExpensesOutput from "@/components/ExpensesOutput/ExpensesOutput";
 import { getDateMinusDay } from "@/util/date";
 import { fetchExpenses } from "@/util/http";
-import LoadingOverlay from "@/components/ExpensesOutput/UI/LoadingOverlay";
-import ErrorOverlay from "@/components/ExpensesOutput/UI/ErrorOverlay";
+import LoadingOverlay from "@/components/UI/LoadingOverlay";
+import ErrorOverlay from "@/components/UI/ErrorOverlay";
 
 const RecentExpensesScreen = () => {
   const [isFetching, setIsFetching] = useState(true);

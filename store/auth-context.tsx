@@ -1,29 +1,62 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 
 type AuthContextType = {
+  token: string;
   isAuthenticated: boolean;
-  authenticate: () => void;
+  authenticate: (token: string) => void;
   logout: () => void;
 };
 
-const AuthContext = createContext<AuthContextType | null>(null);
+export const AuthContext = createContext<AuthContextType>({
+  token: "",
+  isAuthenticated: false,
+  authenticate: () => {},
+  logout: () => {},
+});
 
 export function AuthContextProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authToken, setAuthToken] = useState<string>("");
 
-  function authenticate() {
-    setIsAuthenticated(true);
+  useEffect(() => {
+    async function fetchToken() {
+      const storedToken = await AsyncStorage.getItem("token");
+
+      if (storedToken) {
+        setAuthToken(storedToken);
+        router.replace("/(authenticated)/welcome");
+      }
+    }
+
+    fetchToken();
+  }, []);
+
+  function authenticate(token: string) {
+    setAuthToken(token);
+    AsyncStorage.setItem("token", token);
+    router.replace("/(authenticated)/welcome");
   }
 
   function logout() {
-    setIsAuthenticated(false);
+    setAuthToken("");
+    router.replace("/auth/login");
   }
 
-  return (
-    <AuthContext.Provider value={{ isAuthenticated, authenticate, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const value = {
+    token: authToken,
+    isAuthenticated: !!authToken,
+    authenticate: authenticate,
+    logout: logout,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

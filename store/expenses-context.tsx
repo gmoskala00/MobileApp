@@ -1,5 +1,5 @@
 import { createContext, useReducer } from "react";
-import { Expense, ExpenseInput } from "@/models/expense";
+import { Expense } from "@/models/expense";
 
 type ExpensesContextType = {
   expenses: Expense[];

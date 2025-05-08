@@ -1,9 +1,12 @@
 import { router, Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { GlobalStyles } from "@/constants/style";
-import IconButton from "@/components/ExpensesOutput/UI/IconButton";
+import IconButton from "@/components/UI/IconButton";
+import { useAuth } from "@/store/auth-context";
 
 const TabsLayout = () => {
+  const { logout } = useAuth();
+
   return (
     <Tabs
       screenOptions={{
@@ -21,17 +24,27 @@ const TabsLayout = () => {
         },
         tabBarActiveTintColor: GlobalStyles.colors.accent500,
         headerRight: ({ tintColor }) => (
-          <IconButton
-            icon="add"
-            size={24}
-            color={tintColor ?? "white"}
-            onPress={() => {
-              router.push({
-                pathname: "/manage-expense",
-                params: { expenseId: null },
-              });
-            }}
-          />
+          <>
+            <IconButton
+              icon="add"
+              size={24}
+              color={tintColor ?? "white"}
+              onPress={() => {
+                router.push({
+                  pathname: "/manage-expense",
+                  params: { expenseId: null },
+                });
+              }}
+            />
+            <IconButton
+              icon="exit"
+              size={24}
+              color={tintColor ?? "white"}
+              onPress={() => {
+                logout();
+              }}
+            />
+          </>
         ),
       }}
     >

@@ -1,15 +1,15 @@
 import { StyleSheet, View } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import IconButton from "@/components/ExpensesOutput/UI/IconButton";
+import IconButton from "@/components/UI/IconButton";
 import { GlobalStyles } from "@/constants/style";
 
 import { useContext, useState } from "react";
 import { ExpensesContext } from "@/store/expenses-context";
-import ExpenseForm from "@/components/ExpensesOutput/ManageExpense/ExpenseForm";
+import ExpenseForm from "@/components/ManageExpense/ExpenseForm";
 import { ExpenseInput } from "@/models/expense";
 import { deleteExpense, storeExpense, updateExpense } from "@/util/http";
-import LoadingOverlay from "@/components/ExpensesOutput/UI/LoadingOverlay";
-import ErrorOverlay from "@/components/ExpensesOutput/UI/ErrorOverlay";
+import LoadingOverlay from "@/components/UI/LoadingOverlay";
+import ErrorOverlay from "@/components/UI/ErrorOverlay";
 
 const ManageExpenseScreen = () => {
   const [isSubmitting, setIsSumbitting] = useState(false);
