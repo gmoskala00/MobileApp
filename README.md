@@ -13,7 +13,7 @@ A simple React Native app for tracking personal expenses using Firebase and Expo
 
 ```
 Email:    test@test.pl
-Password: test1234
+Password: zaq1@WSX
 ```
 
 ## Tech Stack
