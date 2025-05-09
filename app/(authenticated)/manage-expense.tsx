@@ -10,10 +10,12 @@ import { ExpenseInput } from "@/models/expense";
 import { deleteExpense, storeExpense, updateExpense } from "@/util/http";
 import LoadingOverlay from "@/components/UI/LoadingOverlay";
 import ErrorOverlay from "@/components/UI/ErrorOverlay";
+import { AuthContext } from "@/store/auth-context";
 
 const ManageExpenseScreen = () => {
   const [isSubmitting, setIsSumbitting] = useState(false);
   const [error, setError] = useState("");
+  const { token, userId } = useContext(AuthContext);
 
   const { expenseId } = useLocalSearchParams();
   const expensesContext = useContext(ExpensesContext);
@@ -47,12 +49,15 @@ const ManageExpenseScreen = () => {
     try {
       if (isEditing) {
         if (typeof expenseId == "string") {
-          expensesContext.updateExpense(expenseId, expenseData);
-          await updateExpense(expenseId, expenseData);
+          expensesContext.updateExpense(expenseId, {
+            ...expenseData,
+            userId: userId,
+          });
+          await updateExpense(expenseId, { ...expenseData, userId: userId });
         }
       } else {
-        const id = await storeExpense(expenseData);
-        expensesContext.addExpense({ ...expenseData, id: id });
+        const id = await storeExpense({ ...expenseData, userId: userId });
+        expensesContext.addExpense({ ...expenseData, id: id, userId: userId });
       }
       router.back();
     } catch (error) {

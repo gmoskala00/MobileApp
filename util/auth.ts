@@ -6,17 +6,17 @@ export async function authenticate(
   mode: string,
   email: string,
   password: string
-) {
+): Promise<{ token: string; userId: string }> {
   const url = `https://identitytoolkit.googleapis.com/v1/accounts:${mode}?key=${API_KEY}`;
 
-  const respone = await axios.post(url, {
+  const response = await axios.post(url, {
     email: email,
     password: password,
     returnSecureToken: true,
   });
 
-  const token = respone.data.idToken;
-  return token;
+  const { idToken: token, localId: userId } = response.data;
+  return { token, userId };
 }
 
 export function createUser(email: string, password: string) {

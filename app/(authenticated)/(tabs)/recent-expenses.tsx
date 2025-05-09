@@ -6,17 +6,19 @@ import { getDateMinusDay } from "@/util/date";
 import { fetchExpenses } from "@/util/http";
 import LoadingOverlay from "@/components/UI/LoadingOverlay";
 import ErrorOverlay from "@/components/UI/ErrorOverlay";
+import { AuthContext } from "@/store/auth-context";
 
 const RecentExpensesScreen = () => {
   const [isFetching, setIsFetching] = useState(true);
   const [error, setError] = useState("");
   const expensesContext = useContext(ExpensesContext);
+  const { userId } = useContext(AuthContext);
 
   useEffect(() => {
     async function getExpenses() {
       setIsFetching(true);
       try {
-        const expenses = await fetchExpenses();
+        const expenses = await fetchExpenses(userId);
         expensesContext.setExpenses(expenses);
       } catch (error) {
         setError("Could not fetch expenses");

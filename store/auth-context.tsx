@@ -10,27 +10,32 @@ import {
 
 type AuthContextType = {
   token: string;
+  userId: string;
   isAuthenticated: boolean;
-  authenticate: (token: string) => void;
+  authenticate: (token: string, userId: string) => void;
   logout: () => void;
 };
 
 export const AuthContext = createContext<AuthContextType>({
   token: "",
+  userId: "",
   isAuthenticated: false,
   authenticate: () => {},
   logout: () => {},
 });
 
 export function AuthContextProvider({ children }: { children: ReactNode }) {
+  const [userId, setUserId] = useState<string>("");
   const [authToken, setAuthToken] = useState<string>("");
 
   useEffect(() => {
     async function fetchToken() {
       const storedToken = await AsyncStorage.getItem("token");
+      const storedUserId = await AsyncStorage.getItem("userId");
 
-      if (storedToken) {
+      if (storedToken && storedUserId) {
         setAuthToken(storedToken);
+        setUserId(storedUserId);
         router.replace("/(authenticated)/welcome");
       }
     }
@@ -38,19 +43,23 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
     fetchToken();
   }, []);
 
-  function authenticate(token: string) {
+  function authenticate(token: string, userId: string) {
     setAuthToken(token);
+    setUserId(userId);
     AsyncStorage.setItem("token", token);
+    AsyncStorage.setItem("userId", userId);
     router.replace("/(authenticated)/welcome");
   }
 
   function logout() {
     setAuthToken("");
+    setUserId("");
     router.replace("/auth/login");
   }
 
   const value = {
     token: authToken,
+    userId: userId,
     isAuthenticated: !!authToken,
     authenticate: authenticate,
     logout: logout,

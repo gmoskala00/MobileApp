@@ -13,18 +13,22 @@ export async function storeExpense(expenseData: ExpenseInput) {
   return id;
 }
 
-export async function fetchExpenses() {
+export async function fetchExpenses(userId: string) {
   const response = await axios.get(BACKEND_URL + "/expenses.json");
 
   const expenses = [];
   for (const key in response.data) {
-    const expenseObj = {
-      id: key,
-      amount: response.data[key].amount,
-      date: new Date(response.data[key].date),
-      description: response.data[key].description,
-    };
-    expenses.push(expenseObj);
+    const expense = response.data[key];
+
+    if (expense.userId === userId) {
+      expenses.push({
+        id: key,
+        amount: expense.amount,
+        date: new Date(expense.date),
+        description: expense.description,
+        userId: expense.userId,
+      });
+    }
   }
 
   return expenses;
